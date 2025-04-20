@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:8000"
+    working_dir: /var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: booksdb
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:
